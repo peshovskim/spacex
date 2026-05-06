@@ -5,6 +5,9 @@
 
 # Visual Studio / VS Code / Rider
 .vs/
+# SSDT / Microsoft.Build.Sql — IDE model files (often exclusivity-locked while VS is open)
+*.dbmdl
+*.jfm
 *.user
 *.userosscache
 *.suo
