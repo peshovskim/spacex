@@ -4,7 +4,7 @@ CREATE TABLE [dbo].[User](
     [LastName]              NVARCHAR(256)       NULL,
     [Email]                 NVARCHAR(256)       NOT NULL,
     [PasswordHash]          NVARCHAR(MAX)       NULL,
-    [Sault]                 NVARCHAR(MAX)       NULL,
+    [Salt]                  NVARCHAR(MAX)       NULL,
 
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Id])
 );
