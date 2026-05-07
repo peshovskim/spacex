@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SpaceX.Application.Security;
 using SpaceX.Infrastructure.Options;
+using SpaceX.Infrastructure.Security;
 
 namespace SpaceX.Infrastructure;
 
@@ -19,6 +21,8 @@ public static class DependencyInjection
                 options.ConnectionString =
                     config.GetConnectionString("DefaultConnection") ?? string.Empty;
             });
+
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
         return services;
     }
