@@ -7,6 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AngularDev",
+        policy =>
+            policy
+                .WithOrigins("http://localhost:4200", "https://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -34,6 +45,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AngularDev");
+}
 
 app.UseAuthorization();
 
