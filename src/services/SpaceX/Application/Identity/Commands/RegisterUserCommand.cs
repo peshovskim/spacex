@@ -1,19 +1,58 @@
 using MediatR;
+using SpaceX.Application.Common.Abstractions;
 using SpaceX.Application.Identity.Requests;
+using SpaceX.Application.Identity.Repositories;
 using SpaceX.Application.Security;
+using SpaceX.Domain.Entities;
+using SharedKernel;
 using SharedKernel.Cqrs;
 
 namespace SpaceX.Application.Identity.Commands;
 
-public sealed record RegisterUserCommand(RegisterUserRequest Request) : ICommand;
+public sealed record RegisterUserCommand(RegisterUserRequest Request) : ICommand<Result>;
 
-public sealed class RegisterUserCommandHandler(IPasswordHasher passwordHasher)
-    : IRequestHandler<RegisterUserCommand>
+public sealed class RegisterUserCommandHandler(
+    IPasswordHasher passwordHasher,
+    IUserRepository userRepository,
+    IUnitOfWork unitOfWork)
+    : IRequestHandler<RegisterUserCommand, Result>
 {
-    public Task Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
-        passwordHasher.HashPassword(command.Request.Password);
+        var request = command.Request;
 
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(request.FirstName) ||
+            string.IsNullOrWhiteSpace(request.LastName) ||
+            string.IsNullOrWhiteSpace(request.Email) ||
+            string.IsNullOrWhiteSpace(request.Password))
+        {
+            return Result.Invalid(ResultCodes.Validation, "First name, last name, email, and password are required.");
+        }
+
+        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+
+        User? existingUser = await userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+
+        if (existingUser is not null)
+        {
+            return Result.Conflicted(ResultCodes.Conflict, "A user with this email already exists.");
+        }
+
+        (byte[]? hash, byte[]? salt) = passwordHasher.HashPassword(request.Password);
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            FirstName = request.FirstName.Trim(),
+            LastName = request.LastName.Trim(),
+            Email = normalizedEmail,
+            PasswordHash = hash,
+            Salt = salt,
+        };
+
+        await userRepository.AddAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 }
