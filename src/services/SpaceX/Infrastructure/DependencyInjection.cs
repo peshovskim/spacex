@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpaceX.Application.Common.Abstractions;
+using SpaceX.Application.Identity;
 using SpaceX.Application.Identity.Repositories;
 using SpaceX.Application.Security;
 using SpaceX.Infrastructure.Options;
@@ -59,6 +60,7 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddEfUnitOfWork<AppDbContext>();
 

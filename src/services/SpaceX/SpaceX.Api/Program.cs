@@ -1,6 +1,10 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SpaceX.Application;
 using SpaceX.Infrastructure;
+using SpaceX.Infrastructure.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,27 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        JwtOptions jwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
+            ?? throw new InvalidOperationException("Jwt missing.");
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+            ValidateIssuer = true,
+            ValidIssuer = jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwt.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+        };
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -51,6 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseCors("AngularDev");
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
