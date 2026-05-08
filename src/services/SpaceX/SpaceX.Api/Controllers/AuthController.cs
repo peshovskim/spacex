@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SpaceX.Application.Identity.Commands;
 using SpaceX.Application.Identity.Requests;
+using SpaceX.Application.Identity.Responses;
 using SharedKernel;
 
 namespace SpaceX.Api.Controllers;
@@ -25,7 +26,7 @@ public sealed class AuthController(IMediator mediator) : ExtendedApiController
         [FromBody] LoginUserRequest request,
         CancellationToken cancellationToken)
     {
-        Result result = await mediator.Send(new LoginUserCommand(request), cancellationToken);
+        Result<LoginResponse> result = await mediator.Send(new LoginUserCommand(request), cancellationToken);
 
         return OkOrError(result);
     }

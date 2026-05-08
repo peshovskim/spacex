@@ -2,7 +2,7 @@ using MediatR;
 using SpaceX.Application.Common.Abstractions;
 using SpaceX.Application.Identity.Requests;
 using SpaceX.Application.Identity.Repositories;
-using SpaceX.Application.Security;
+using SpaceX.Application.Identity.Interfaces;
 using SpaceX.Domain.Entities;
 using SharedKernel;
 using SharedKernel.Cqrs;

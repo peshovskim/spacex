@@ -1,4 +1,4 @@
-namespace SpaceX.Application.Security;
+namespace SpaceX.Application.Identity.Interfaces;
 
 public interface IPasswordHasher
 {

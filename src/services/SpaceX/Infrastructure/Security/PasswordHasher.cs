@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using SpaceX.Application.Security;
+using SpaceX.Application.Identity.Interfaces;
 
 namespace SpaceX.Infrastructure.Security;
 

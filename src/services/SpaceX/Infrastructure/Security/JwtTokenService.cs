@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SpaceX.Application.Identity;
+using SpaceX.Application.Identity.Interfaces;
 using SpaceX.Domain.Entities;
 using SpaceX.Infrastructure.Options;
 
@@ -13,7 +14,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenSer
 {
     private readonly JwtOptions _options = options.Value;
 
-    public string GenerateToken(User user)
+    public JwtIssueResult Issue(User user)
     {
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
 
@@ -27,13 +28,17 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenSer
 
         var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
+        DateTime expiresAt = DateTime.UtcNow.AddMinutes(_options.ExpiresMinutes);
+
         var jwt = new JwtSecurityToken(
             issuer: _options.Issuer,
             audience: _options.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_options.ExpiresMinutes),
+            expires: expiresAt,
             signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(jwt);
+        string encoded = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+        return new JwtIssueResult(encoded, expiresAt);
     }
 }

@@ -1,6 +1,17 @@
 namespace SharedKernel;
 
-/// <summary>
-/// Domain failure: <see cref="Type"/> drives HTTP mapping at the boundary; <see cref="Code"/> is a stable string for clients; <see cref="Message"/> is human-readable detail.
-/// </summary>
-public sealed record ResultError(ResultType Type, string Code, string Message);
+public sealed record ResultError
+{
+    public ResultType Type { get; set; }
+
+    public string Code { get; set; }
+
+    public string Message { get; set; }
+
+    public ResultError(ResultType type, string code, string message)
+    {
+        Type = type;
+        Code = code;
+        Message = message;
+    }
+}
