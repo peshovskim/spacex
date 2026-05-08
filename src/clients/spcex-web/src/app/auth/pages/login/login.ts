@@ -11,6 +11,7 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth.service';
+import { TokenStorage } from '../../services/token-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent {
   constructor(
     private readonly fb: NonNullableFormBuilder,
     private readonly auth: AuthService,
+    private readonly tokens: TokenStorage,
     private readonly snackBar: MatSnackBar,
     private readonly router: Router,
   ) {
@@ -61,11 +63,12 @@ export class LoginComponent {
       .login(this.form.getRawValue())
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.snackBar.open('You are now signed in to SpaceX Portal.', 'Close', {
             duration: 5000,
           });
           void this.router.navigate(['/missions']);
+          this.tokens.set(response.accessToken);
         },
         error: (error: HttpErrorResponse) =>
           this.snackBar.open(this.formatLoginErrorMessage(error), 'Close', {
