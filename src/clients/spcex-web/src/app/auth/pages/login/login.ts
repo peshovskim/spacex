@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth.service';
@@ -37,6 +37,7 @@ export class LoginComponent {
     private readonly fb: NonNullableFormBuilder,
     private readonly auth: AuthService,
     private readonly snackBar: MatSnackBar,
+    private readonly router: Router,
   ) {
     this.form = this.fb.group({
       email: this.fb.control('', {
@@ -63,10 +64,12 @@ export class LoginComponent {
       .login(this.form.getRawValue())
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () =>
+        next: () => {
           this.snackBar.open('You are now signed in to SpaceX Portal.', 'Close', {
             duration: 5000,
-          }),
+          });
+          void this.router.navigate(['/missions']);
+        },
         error: () =>
           this.snackBar.open('Check your email and password and try again.', 'Close', {
             duration: 5000,
