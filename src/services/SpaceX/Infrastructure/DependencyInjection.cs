@@ -34,6 +34,27 @@ public static class DependencyInjection
                     config.GetConnectionString("DefaultConnection") ?? string.Empty;
             });
 
+        services.AddOptions<JwtOptions>()
+            .Bind(configuration.GetSection("Jwt"))
+            .Validate(
+                options =>
+                {
+                    if (string.IsNullOrWhiteSpace(options.Issuer)
+                        || string.IsNullOrWhiteSpace(options.Audience))
+                    {
+                        return false;
+                    }
+
+                    if (!options.IsSecretKeyStrongEnough())
+                    {
+                        return false;
+                    }
+
+                    return options.ExpiresMinutes > 0;
+                },
+                "Jwt options validation failed.")
+            .ValidateOnStart();
+
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
 
