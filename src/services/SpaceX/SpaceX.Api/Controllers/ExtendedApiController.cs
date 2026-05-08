@@ -13,7 +13,7 @@ public abstract class ExtendedApiController : ControllerBase
             ResultType.NotFound => HttpStatusCode.NotFound,
             ResultType.Forbidden => HttpStatusCode.Forbidden,
             ResultType.Conflicted => HttpStatusCode.Conflict,
-            ResultType.Invalid => HttpStatusCode.NotAcceptable,
+            ResultType.Invalid => HttpStatusCode.BadRequest,
             ResultType.Unauthorized => HttpStatusCode.Unauthorized,
             _ => HttpStatusCode.InternalServerError,
         };

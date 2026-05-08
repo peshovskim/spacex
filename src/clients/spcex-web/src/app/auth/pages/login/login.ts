@@ -1,9 +1,6 @@
 import { Component, signal } from '@angular/core';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -70,10 +67,22 @@ export class LoginComponent {
           });
           void this.router.navigate(['/missions']);
         },
-        error: () =>
-          this.snackBar.open('Check your email and password and try again.', 'Close', {
+        error: (error: HttpErrorResponse) =>
+          this.snackBar.open(this.formatLoginErrorMessage(error), 'Close', {
             duration: 5000,
           }),
       });
+  }
+
+  private formatLoginErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 401) {
+      return 'Invalid email or password.';
+    }
+
+    if (error.status === 400) {
+      return 'Please enter a valid email and password.';
+    }
+
+    return 'Sign-in failed due to a server error. Please try again.';
   }
 }

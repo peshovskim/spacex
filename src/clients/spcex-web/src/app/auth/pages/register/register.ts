@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -72,16 +73,24 @@ export class RegisterComponent {
           this.snackBar.open('Account created successfully.', 'Close', {
             duration: 5000,
           });
-          void this.router.navigate(['/missions']);
+          void this.router.navigate(['/auth/login']);
         },
-        error: () =>
-          this.snackBar.open(
-            'Could not create account. Please verify your details and retry.',
-            'Close',
-            {
-              duration: 5000,
-            },
-          ),
+        error: (error: HttpErrorResponse) =>
+          this.snackBar.open(this.formatRegisterErrorMessage(error), 'Close', {
+            duration: 5000,
+          }),
       });
+  }
+
+  private formatRegisterErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 409) {
+      return 'An account with this email already exists.';
+    }
+
+    if (error.status === 400) {
+      return 'Please check your details and try again.';
+    }
+
+    return 'Registration failed due to a server error. Please try again.';
   }
 }

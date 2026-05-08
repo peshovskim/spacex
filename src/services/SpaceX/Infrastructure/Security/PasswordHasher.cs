@@ -32,17 +32,17 @@ public sealed class PasswordHasher : IPasswordHasher
     {
         if (string.IsNullOrWhiteSpace(password))
         {
-            throw new ArgumentException("Pasword cannot be null or empty.", nameof(password));
+            return false;
         }
 
-        if (hash is null)
+        if (hash is null || hash.Length == 0)
         {
-            throw new ArgumentNullException(nameof(hash));
+            return false;
         }
 
-        if (salt is null)
+        if (salt is null || salt.Length == 0)
         {
-            throw new ArgumentNullException(nameof(salt));
+            return false;
         }
 
         var computed = Rfc2898DeriveBytes.Pbkdf2(
@@ -52,6 +52,6 @@ public sealed class PasswordHasher : IPasswordHasher
             HashAlgorithmName.SHA256,
             hash.Length);
 
-        return computed.SequenceEqual(hash);
+        return CryptographicOperations.FixedTimeEquals(computed, hash);
     }
 }
