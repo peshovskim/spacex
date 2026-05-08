@@ -42,7 +42,6 @@ public sealed class RegisterUserCommandHandler(
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
             FirstName = request.FirstName.Trim(),
             LastName = request.LastName.Trim(),
             Email = normalizedEmail,

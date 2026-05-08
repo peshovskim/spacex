@@ -1,0 +1,31 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.5rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+button[type='submit'] {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+mat-spinner {
+  display: inline-block;
+  vertical-align: middle;
+}

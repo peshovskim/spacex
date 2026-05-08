@@ -1,4 +1,3 @@
-/** Matches SpaceX.Application.Identity.Requests.RegisterUserRequest */
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
@@ -6,7 +5,6 @@ export interface RegisterRequest {
   password: string;
 }
 
-/** Matches SpaceX.Application.Identity.Requests.LoginUserRequest */
 export interface LoginRequest {
   email: string;
   password: string;
