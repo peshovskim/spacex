@@ -1,4 +1,4 @@
-using SpaceX.Application.Identity;
+using SpaceX.Application.Identity.Results;
 using SpaceX.Domain.Entities;
 
 namespace SpaceX.Application.Identity.Interfaces;

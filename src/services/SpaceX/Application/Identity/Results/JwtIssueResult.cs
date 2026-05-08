@@ -1,4 +1,4 @@
-namespace SpaceX.Application.Identity;
+namespace SpaceX.Application.Identity.Results;
 
 public sealed record JwtIssueResult
 {

@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SpaceX.Application.Identity;
 using SpaceX.Application.Identity.Interfaces;
+using SpaceX.Application.Identity.Results;
 using SpaceX.Domain.Entities;
 using SpaceX.Infrastructure.Options;
 
