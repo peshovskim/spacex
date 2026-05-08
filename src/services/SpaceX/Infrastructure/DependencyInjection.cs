@@ -20,12 +20,22 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "Connection string 'DefaultConnection' is missing or empty.");
+        }
+
         services.AddOptions<DatabaseOptions>()
             .Configure<IConfiguration>((options, config) =>
             {
                 options.ConnectionString =
                     config.GetConnectionString("DefaultConnection") ?? string.Empty;
             });
+
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(connectionString));
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IUserRepository, UserRepository>();
