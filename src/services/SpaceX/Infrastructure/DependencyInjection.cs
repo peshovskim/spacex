@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using SpaceX.Application.Common.Abstractions;
 using SpaceX.Application.Identity.Interfaces;
 using SpaceX.Application.Identity.Repositories;
+using SpaceX.Application.Missions.Interfaces;
+using SpaceX.Infrastructure.Persistence.Read.Missions.Queries;
 using SpaceX.Infrastructure.Options;
 using SpaceX.Infrastructure.Persistence;
 using SpaceX.Infrastructure.Persistence.Repositories;
@@ -54,6 +57,23 @@ public static class DependencyInjection
                 },
                 "Jwt options validation failed.")
             .ValidateOnStart();
+
+        services
+            .AddOptions<SpaceXApiOptions>()
+            .Bind(configuration.GetSection(SpaceXApiOptions.SectionName))
+            .Validate(
+                o =>
+                {
+                    string? url = o.BaseUrl?.Trim();
+
+                    return !string.IsNullOrEmpty(url)
+                           && Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)
+                           && uri.Scheme == Uri.UriSchemeHttps;
+                },
+                "SpaceXApi:BaseUrl must be absolute https.")
+            .ValidateOnStart();
+
+        services.AddSingleton<IMissionsReadRepository, MissionsQueries>();
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
