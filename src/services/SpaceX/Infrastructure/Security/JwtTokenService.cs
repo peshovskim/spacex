@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SpaceX.Application.Identity.Interfaces;
 using SpaceX.Application.Identity.Results;
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 using SpaceX.Infrastructure.Options;
 
 namespace SpaceX.Infrastructure.Security;

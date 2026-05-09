@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SpaceX.Application.Identity.Repositories;
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 
 namespace SpaceX.Infrastructure.Persistence.Repositories;
 

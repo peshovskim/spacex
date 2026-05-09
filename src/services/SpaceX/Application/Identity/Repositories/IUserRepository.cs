@@ -1,4 +1,4 @@
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 
 namespace SpaceX.Application.Identity.Repositories;
 

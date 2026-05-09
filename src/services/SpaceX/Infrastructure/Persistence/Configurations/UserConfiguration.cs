@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 
 namespace SpaceX.Infrastructure.Persistence.Configurations;
 

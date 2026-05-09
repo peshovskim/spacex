@@ -3,7 +3,7 @@ using SpaceX.Application.Identity.Repositories;
 using SpaceX.Application.Identity.Requests;
 using SpaceX.Application.Identity.Responses;
 using SpaceX.Application.Identity.Interfaces;
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 using SharedKernel;
 using SharedKernel.Cqrs;
 using SpaceX.Application.Identity.Results;

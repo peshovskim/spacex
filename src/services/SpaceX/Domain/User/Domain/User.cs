@@ -1,7 +1,7 @@
-namespace SpaceX.Domain.Entities;
+namespace SpaceX.Domain.User;
 
 /// <summary>
-/// User entity
+/// User aggregate root.
 /// </summary>
 public sealed class User
 {

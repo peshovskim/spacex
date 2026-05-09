@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SpaceX.Domain.Entities;
+using SpaceX.Domain.User;
 
 namespace SpaceX.Infrastructure.Persistence;
 
