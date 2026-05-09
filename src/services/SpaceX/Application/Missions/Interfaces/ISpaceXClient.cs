@@ -4,9 +4,9 @@ using SharedKernel;
 
 namespace SpaceX.Application.Missions.Interfaces;
 
-public interface IMissionsReadRepository
+public interface ISpaceXClient
 {
-    Task<Result<PaginatedLaunchesReadModel>> GetLaunchesAsync(
-        MissionsLaunchScope scope,
+    Task<Result<MissionsReadModel>> QueryLaunchesAsync(
+        MissionsLaunchScope type,
         CancellationToken cancellationToken = default);
 }

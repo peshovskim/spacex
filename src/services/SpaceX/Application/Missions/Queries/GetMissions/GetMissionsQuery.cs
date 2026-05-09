@@ -1,28 +1,26 @@
 using MediatR;
-using SpaceX.Domain.Missions.Enum;
 using SpaceX.Application.Missions.Interfaces;
 using SpaceX.Application.Missions.Responses;
+using SpaceX.Domain.Missions.Enum;
 using SharedKernel;
 using SharedKernel.Cqrs;
 
 namespace SpaceX.Application.Missions.Queries.GetMissions;
 
-public sealed record GetMissionsQuery(MissionsLaunchScope Scope = MissionsLaunchScope.Latest)
-    : IQuery<Result<PaginatedLaunchesReadModel>>;
+public sealed record GetMissionsQuery(MissionsLaunchScope Type = MissionsLaunchScope.Upcoming)
+    : IQuery<Result<MissionsReadModel>>;
 
-public sealed class GetMissionsQueryHandler : IRequestHandler<GetMissionsQuery, Result<PaginatedLaunchesReadModel>>
+public sealed class GetMissionsQueryHandler : IRequestHandler<GetMissionsQuery, Result<MissionsReadModel>>
 {
-    private readonly IMissionsReadRepository _missionsReadRepository;
+    private readonly ISpaceXClient _spaceXClient;
 
-    public GetMissionsQueryHandler(IMissionsReadRepository missionsReadRepository)
+    public GetMissionsQueryHandler(ISpaceXClient spaceXClient)
     {
-        _missionsReadRepository = missionsReadRepository;
+        _spaceXClient = spaceXClient;
     }
 
-    public Task<Result<PaginatedLaunchesReadModel>> Handle(
-        GetMissionsQuery request,
-        CancellationToken cancellationToken)
+    public Task<Result<MissionsReadModel>> Handle(GetMissionsQuery request, CancellationToken cancellationToken)
     {
-        return _missionsReadRepository.GetLaunchesAsync(request.Scope, cancellationToken);
+        return _spaceXClient.QueryLaunchesAsync(request.Type, cancellationToken);
     }
 }

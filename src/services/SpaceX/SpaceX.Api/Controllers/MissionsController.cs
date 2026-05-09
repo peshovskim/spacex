@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceX.Application.Missions.Queries.GetMissions;
 using SpaceX.Application.Missions.Responses;
@@ -9,16 +8,15 @@ namespace SpaceX.Api.Controllers;
 
 [ApiController]
 [Route("api/missions")]
-[Authorize]
 public sealed class MissionsController(IMediator mediator) : ExtendedApiController
 {
     [HttpGet]
-    [ProducesResponseType(typeof(PaginatedLaunchesReadModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MissionsReadModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetMissions([FromQuery] GetMissionsQuery query, CancellationToken cancellationToken)
     {
-        Result<PaginatedLaunchesReadModel> result =
-            await mediator.Send(query, cancellationToken).ConfigureAwait(false);
+        Result<MissionsReadModel> result =
+            await mediator.Send(query, cancellationToken);
 
         return OkOrError(result);
     }
