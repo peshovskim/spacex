@@ -1,9 +1,9 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using SpaceX.Application.Missions.Interfaces;
-using SpaceX.Application.Missions.Responses;
-using SpaceX.Domain.Missions.Enum;
+using SpaceX.Application.Launches.Interfaces;
+using SpaceX.Application.Launches.Responses;
+using SpaceX.Domain.Launches.Enum;
 using SpaceX.Infrastructure.Options;
 using SharedKernel;
 
@@ -30,15 +30,11 @@ public sealed class SpaceXClient : ISpaceXClient, IDisposable
         };
     }
 
-    public async Task<Result<MissionsReadModel>> QueryLaunchesAsync(
-        MissionsLaunchScope _,
+    public async Task<Result<LaunchesReadModel>> QueryLaunchesAsync(
+        LaunchScope type,
         CancellationToken cancellationToken = default)
     {
-        var body = new
-        {
-            query = new { upcoming = true },
-            options = new { },
-        };
+        object body = BuildBody(type);
 
         using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
             "launches/query",
@@ -54,8 +50,35 @@ public sealed class SpaceXClient : ISpaceXClient, IDisposable
 
         LaunchReadModel[]? launches = docs.Deserialize<LaunchReadModel[]>(JsonOptions);
 
-        return Result<MissionsReadModel>.Success(
-            new MissionsReadModel { Launches = launches ?? [] });
+        return Result<LaunchesReadModel>.Success(
+            new LaunchesReadModel { Launches = launches ?? [] });
+    }
+
+    private static object BuildBody(LaunchScope type)
+    {
+        return type switch
+        {
+            LaunchScope.Latest => new
+            {
+                query = new { upcoming = false },
+                options = new
+                {
+                    limit = 1,
+                    sort = new { date_utc = "desc" },
+                },
+            },
+            LaunchScope.Upcoming => new
+            {
+                query = new { upcoming = true },
+                options = new { },
+            },
+            LaunchScope.Past => new
+            {
+                query = new { upcoming = false },
+                options = new { pagination = false },
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        };
     }
 
     public void Dispose()

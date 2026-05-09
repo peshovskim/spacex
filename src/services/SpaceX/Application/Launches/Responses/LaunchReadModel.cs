@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SpaceX.Application.Missions.Responses;
+namespace SpaceX.Application.Launches.Responses;
 
 public sealed class LaunchReadModel
 {

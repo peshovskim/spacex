@@ -56,7 +56,7 @@ builder.Services.AddSwaggerGen(options =>
         {
             Title = "SpaceX API",
             Version = "v1",
-            Description = "Backend API: authentication and SpaceX mission data (proxied).",
+            Description = "Backend API: authentication and SpaceX launch data (proxied).",
         });
 });
 

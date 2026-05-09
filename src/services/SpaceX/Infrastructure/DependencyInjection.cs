@@ -5,8 +5,8 @@ using Microsoft.Extensions.Options;
 using SpaceX.Application.Common.Abstractions;
 using SpaceX.Application.Identity.Interfaces;
 using SpaceX.Application.Identity.Repositories;
-using SpaceX.Application.Missions.Interfaces;
-using SpaceX.Infrastructure.Persistence.Read.Missions.Queries;
+using SpaceX.Application.Launches.Interfaces;
+using SpaceX.Infrastructure.External.SpaceX;
 using SpaceX.Infrastructure.Options;
 using SpaceX.Infrastructure.Persistence;
 using SpaceX.Infrastructure.Persistence.Repositories;
@@ -73,7 +73,7 @@ public static class DependencyInjection
                 "SpaceXApi:BaseUrl must be absolute https.")
             .ValidateOnStart();
 
-        services.AddSingleton<IMissionsReadRepository, MissionsQueries>();
+        services.AddSingleton<ISpaceXClient, SpaceXClient>();
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
