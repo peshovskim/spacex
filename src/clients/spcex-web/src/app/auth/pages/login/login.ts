@@ -68,7 +68,7 @@ export class LoginComponent {
           this.snackBar.open('You are now signed in to SpaceX Portal.', 'Close', {
             duration: 5000,
           });
-          void this.router.navigate(['/missions']);
+          void this.router.navigate(['/launches']);
         },
         error: (error: HttpErrorResponse) =>
           this.snackBar.open(this.formatLoginErrorMessage(error), 'Close', {

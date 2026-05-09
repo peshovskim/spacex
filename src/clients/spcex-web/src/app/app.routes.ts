@@ -5,11 +5,11 @@ import { AuthGuard } from './auth/auth.guard';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'auth/login' },
   {
-    path: 'missions',
+    path: 'launches',
     canActivate: [AuthGuard],
     loadComponent: () =>
-      import('./missions/pages/missions-home/missions-home').then(
-        (m) => m.MissionsHome,
+      import('./launches/pages/launches-home/launches-home').then(
+        (m) => m.LaunchesHome,
       ),
   },
   {
