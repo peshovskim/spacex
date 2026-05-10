@@ -21,7 +21,7 @@ public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
     public SpaceXLaunchClient(IOptions<SpaceXApiOptions> options)
     {
         SpaceXApiOptions o = options.Value;
-        var baseUrl = o.BaseUrl;
+        var baseUrl = o.BaseUrl.Trim().TrimEnd('/') + "/";
 
         _httpClient = new HttpClient
         {
