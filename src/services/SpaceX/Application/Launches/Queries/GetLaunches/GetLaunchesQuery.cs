@@ -7,20 +7,20 @@ using SharedKernel.Cqrs;
 
 namespace SpaceX.Application.Launches.Queries.GetLaunches;
 
-public sealed record GetLaunchesQuery(LaunchScope Type = LaunchScope.Upcoming)
+public sealed record GetLaunchesQuery(LaunchType Type = LaunchType.Upcoming)
     : IQuery<Result<LaunchesReadModel>>;
 
 public sealed class GetLaunchesQueryHandler : IRequestHandler<GetLaunchesQuery, Result<LaunchesReadModel>>
 {
-    private readonly ISpaceXClient _spaceXClient;
+    private readonly ISpaceXLaunchClient _spaceXClient;
 
-    public GetLaunchesQueryHandler(ISpaceXClient spaceXClient)
+    public GetLaunchesQueryHandler(ISpaceXLaunchClient spaceXClient)
     {
         _spaceXClient = spaceXClient;
     }
 
     public Task<Result<LaunchesReadModel>> Handle(GetLaunchesQuery request, CancellationToken cancellationToken)
     {
-        return _spaceXClient.QueryLaunchesAsync(request.Type, cancellationToken);
+        return _spaceXClient.QueryAsync(request.Type, cancellationToken);
     }
 }

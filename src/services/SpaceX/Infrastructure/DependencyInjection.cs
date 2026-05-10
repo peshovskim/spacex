@@ -73,7 +73,7 @@ public static class DependencyInjection
                 "SpaceXApi:BaseUrl must be absolute https.")
             .ValidateOnStart();
 
-        services.AddSingleton<ISpaceXClient, SpaceXClient>();
+        services.AddSingleton<ISpaceXLaunchClient, SpaceXLaunchClient>();
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
