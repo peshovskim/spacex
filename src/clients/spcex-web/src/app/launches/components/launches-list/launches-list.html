@@ -1,0 +1,18 @@
+<div class="launches-list">
+  @if (loading) {
+    <div class="state state-loading">
+      <mat-spinner diameter="40" />
+      <span>Loading launches…</span>
+    </div>
+  } @else if (errorMessage) {
+    <div class="state state-error" role="alert">
+      {{ errorMessage }}
+    </div>
+  } @else if (launches.length === 0) {
+    <div class="state state-empty">No launches to show.</div>
+  } @else {
+    @for (item of launches; track item.flight_number) {
+      <app-launch-card [launch]="item" />
+    }
+  }
+</div>

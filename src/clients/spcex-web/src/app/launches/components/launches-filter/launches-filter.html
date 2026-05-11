@@ -1,0 +1,12 @@
+<div class="filter">
+  <mat-button-toggle-group
+    class="toggle-group"
+    [hideSingleSelectionIndicator]="true"
+    [value]="selectedType"
+    (change)="onSelectionChange($event)"
+  >
+    <mat-button-toggle value="latest">Latest</mat-button-toggle>
+    <mat-button-toggle value="upcoming">Upcoming</mat-button-toggle>
+    <mat-button-toggle value="past">Past</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
