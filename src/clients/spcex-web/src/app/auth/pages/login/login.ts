@@ -10,8 +10,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
+import { TokenStorage } from '../../../core/services/token-storage.service';
 import { AuthService } from '../../services/auth.service';
-import { TokenStorage } from '../../services/token-storage.service';
 
 @Component({
   selector: 'app-login',
