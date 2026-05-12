@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
+using SpaceX.Application.Launches;
 using SpaceX.Application.Launches.Interfaces;
 using SpaceX.Application.Launches.Responses;
 using SpaceX.Domain.Launches.Enum;
@@ -11,8 +12,6 @@ namespace SpaceX.Infrastructure.External.SpaceX;
 
 public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
 {
-    private const int DefaultListLimit = 10;
-
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -23,46 +22,54 @@ public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
     public SpaceXLaunchClient(IOptions<SpaceXApiOptions> options)
     {
         SpaceXApiOptions o = options.Value;
-        var baseUrl = o.BaseUrl.Trim().TrimEnd('/') + "/";
 
         _httpClient = new HttpClient
         {
-            BaseAddress = new Uri(baseUrl),
+            BaseAddress = new Uri(o.BaseUrl.TrimEnd('/') + "/"),
             Timeout = TimeSpan.FromMinutes(5),
         };
     }
 
     public async Task<Result<LaunchesReadModel>> QueryAsync(
-        LaunchType type,
+        LaunchFilter criteria,
         CancellationToken cancellationToken = default)
     {
-        var body = new SpaceXQuery
+        var request = new
         {
-            Query = BuildQuery(type),
-            Options = BuildOptions(type),
+            Query = BuildQuery(criteria.Type),
+            Options = BuildOptions(criteria),
         };
 
         using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
             "launches/query",
-            body,
+            request,
             cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            return Result<LaunchesReadModel>.InternalError(ResultCodes.InternalError,
+            return Result<LaunchesReadModel>.InternalError(
+                ResultCodes.InternalError,
                 $"SpaceX API returned {(int)response.StatusCode}.");
         }
 
-        string json = await response.Content.ReadAsStringAsync(cancellationToken);
+        using JsonDocument doc = await response.Content.ReadFromJsonAsync<JsonDocument>(
+            cancellationToken: cancellationToken) ?? throw new InvalidOperationException();
 
-        using JsonDocument doc = JsonDocument.Parse(json);
+        JsonElement root = doc.RootElement;
 
-        JsonElement docs = doc.RootElement.GetProperty("docs");
+        LaunchReadModel[] launches =
+            root.GetProperty("docs").Deserialize<LaunchReadModel[]>(JsonOptions) ?? [];
 
-        LaunchReadModel[]? launches = docs.Deserialize<LaunchReadModel[]>(JsonOptions);
+        int totalCount = root.TryGetProperty("totalDocs", out JsonElement total)
+            ? total.GetInt32()
+            : launches.Length;
 
         return Result<LaunchesReadModel>.Success(
-            new LaunchesReadModel { Launches = launches ?? [] });
+            new LaunchesReadModel
+            {
+                Launches = launches,
+                TotalCount = totalCount,
+            });
     }
 
     private static object BuildQuery(LaunchType type)
@@ -70,59 +77,36 @@ public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
         switch (type)
         {
             case LaunchType.Upcoming:
-                return new { upcoming = true };
+                return new Dictionary<string, object>
+                {
+                    ["upcoming"] = true
+                };
 
             case LaunchType.Past:
-                return new { upcoming = false };
-
             case LaunchType.Latest:
-                return new { upcoming = false };
+                return new Dictionary<string, object>
+                {
+                    ["upcoming"] = false
+                };
 
             default:
-                return new { upcoming = true };
+                return new Dictionary<string, object>
+                {
+                    ["upcoming"] = true
+                };
         }
     }
 
-    private static object BuildOptions(LaunchType type)
+    private static object BuildOptions(LaunchFilter criteria)
     {
-        switch (type)
+        return new
         {
-            case LaunchType.Upcoming:
-                return new
-                {
-                    limit = DefaultListLimit,
-                    sort = new
-                    {
-                        date_utc = "asc"
-                    }
-                };
-            case LaunchType.Latest:
-                return new
-                {
-                    limit = 1,
-                    sort = new
-                    {
-                        date_utc = "desc"
-                    }
-                };
-            case LaunchType.Past:
-                return new
-                {
-                    limit = DefaultListLimit,
-                    sort = new
-                    {
-                        date_utc = "desc"
-                    }
-                };
-            default:
-                return new
-                {
-                    limit = DefaultListLimit,
-                    sort = new
-                    {
-                        date_utc = "asc"
-                    }
-                };
-        }
+            limit = criteria.PageSize,
+            offset = criteria.Page * criteria.PageSize,
+            sort = new Dictionary<string, string>
+            {
+                [criteria.SortField] = criteria.SortDirection
+            }
+        };
     }
 }
