@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
+import { TokenStorage } from '../../core/services/token-storage.service';
 import {
   LoginRequest,
   LoginResponse,
@@ -13,9 +15,13 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private readonly http: HttpClient) {}
-
   private readonly baseUrl = environment.apiUrl.replace(/\/$/, '');
+
+  constructor(
+    private readonly http: HttpClient,
+    private readonly tokens: TokenStorage,
+    private readonly router: Router,
+  ) {}
 
   register(request: RegisterRequest): Observable<void> {
     return this.http.post<void>(
@@ -29,5 +35,10 @@ export class AuthService {
       `${this.baseUrl}/api/auth/login`,
       request,
     );
+  }
+
+  signOut(): void {
+    this.tokens.clear();
+    void this.router.navigate(['/auth/login'], { replaceUrl: true });
   }
 }

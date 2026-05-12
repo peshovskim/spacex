@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceX.Application.Launches.Queries.GetLaunches;
 using SpaceX.Application.Launches.Responses;
@@ -8,10 +9,12 @@ namespace SpaceX.Api.Controllers;
 
 [ApiController]
 [Route("api/launches")]
+[Authorize]
 public sealed class LaunchesController(IMediator mediator) : ExtendedApiController
 {
     [HttpGet]
     [ProducesResponseType(typeof(LaunchesReadModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetLaunches([FromQuery] GetLaunchesQuery query, CancellationToken cancellationToken)
     {

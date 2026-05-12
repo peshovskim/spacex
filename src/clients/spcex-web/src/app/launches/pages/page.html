@@ -19,13 +19,14 @@
         >
           <mat-icon>account_circle</mat-icon>
         </button>
-        <a
-          routerLink="/auth/login"
+        <button
+          type="button"
           class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 rounded-3 shell-signout"
+          (click)="signOut()"
         >
           <mat-icon class="shell-signout-icon">logout</mat-icon>
           Sign out
-        </a>
+        </button>
       </div>
     </div>
   </nav>

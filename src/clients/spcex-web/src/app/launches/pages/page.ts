@@ -11,8 +11,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
+import { AuthService } from '../../auth/services/auth.service';
 import { LaunchType, toLaunchType, type LaunchDto } from '../models/launch.model';
 import { LaunchesFilterComponent } from '../components/launches-filter/launches-filter';
 import { LaunchesListComponent } from '../components/launches-list/launches-list';
@@ -20,13 +21,7 @@ import { LaunchesService } from '../services/launches.service';
 
 @Component({
   selector: 'app-page',
-  imports: [
-    TitleCasePipe,
-    RouterLink,
-    MatIconModule,
-    LaunchesFilterComponent,
-    LaunchesListComponent,
-  ],
+  imports: [TitleCasePipe, MatIconModule, LaunchesFilterComponent, LaunchesListComponent],
   templateUrl: './page.html',
   styleUrl: './page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,7 +34,6 @@ export class PageComponent implements OnInit {
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  /** Applied when the user presses Enter in the search field. */
   readonly searchQuery = signal('');
 
   readonly displayedLaunches = computed(() => {
@@ -50,11 +44,7 @@ export class PageComponent implements OnInit {
     }
 
     return items.filter((launch) => {
-      const haystack = [
-        launch.name,
-        launch.details ?? '',
-        String(launch.flight_number),
-      ]
+      const haystack = [launch.name, launch.details ?? '', String(launch.flight_number)]
         .join(' ')
         .toLowerCase();
 
@@ -78,6 +68,7 @@ export class PageComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly launchesService: LaunchesService,
+    private readonly authService: AuthService,
     private readonly destroyRef: DestroyRef,
   ) {}
 
@@ -103,6 +94,10 @@ export class PageComponent implements OnInit {
       relativeTo: this.route,
       queryParams: { type: slug },
     });
+  }
+
+  signOut(): void {
+    this.authService.signOut();
   }
 
   private clearSearchField(): void {
