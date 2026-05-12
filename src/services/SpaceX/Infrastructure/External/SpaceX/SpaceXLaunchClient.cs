@@ -11,6 +11,8 @@ namespace SpaceX.Infrastructure.External.SpaceX;
 
 public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
 {
+    private const int DefaultListLimit = 10;
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -34,16 +36,22 @@ public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
         LaunchType type,
         CancellationToken cancellationToken = default)
     {
-        var body = new
+        var body = new SpaceXQuery
         {
-            query = new { upcoming = true },
-            options = new { },
+            Query = BuildQuery(type),
+            Options = BuildOptions(type),
         };
 
         using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
             "launches/query",
             body,
             cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return Result<LaunchesReadModel>.InternalError(ResultCodes.InternalError,
+                $"SpaceX API returned {(int)response.StatusCode}.");
+        }
 
         string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -55,5 +63,66 @@ public sealed class SpaceXLaunchClient : ISpaceXLaunchClient
 
         return Result<LaunchesReadModel>.Success(
             new LaunchesReadModel { Launches = launches ?? [] });
+    }
+
+    private static object BuildQuery(LaunchType type)
+    {
+        switch (type)
+        {
+            case LaunchType.Upcoming:
+                return new { upcoming = true };
+
+            case LaunchType.Past:
+                return new { upcoming = false };
+
+            case LaunchType.Latest:
+                return new { upcoming = false };
+
+            default:
+                return new { upcoming = true };
+        }
+    }
+
+    private static object BuildOptions(LaunchType type)
+    {
+        switch (type)
+        {
+            case LaunchType.Upcoming:
+                return new
+                {
+                    limit = DefaultListLimit,
+                    sort = new
+                    {
+                        date_utc = "asc"
+                    }
+                };
+            case LaunchType.Latest:
+                return new
+                {
+                    limit = 1,
+                    sort = new
+                    {
+                        date_utc = "desc"
+                    }
+                };
+            case LaunchType.Past:
+                return new
+                {
+                    limit = DefaultListLimit,
+                    sort = new
+                    {
+                        date_utc = "desc"
+                    }
+                };
+            default:
+                return new
+                {
+                    limit = DefaultListLimit,
+                    sort = new
+                    {
+                        date_utc = "asc"
+                    }
+                };
+        }
     }
 }

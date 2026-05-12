@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,21 +17,21 @@ import { LaunchesListComponent } from '../../components/launches-list/launches-l
   styleUrl: './launches-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LaunchesPageComponent {
+export class LaunchesPageComponent implements OnInit {
   readonly activeType = signal<string>(DEFAULT_LAUNCH_QUERY_TYPE);
   readonly launches = signal<LaunchDto[]>([]);
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  private loadGeneration = 0;
-
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly launchesService: LaunchesService,
-    destroyRef: DestroyRef,
-  ) {
-    this.route.queryParamMap.pipe(takeUntilDestroyed(destroyRef)).subscribe((params) => {
+    private readonly destroyRef: DestroyRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const type = params.get('type') ?? DEFAULT_LAUNCH_QUERY_TYPE;
       this.activeType.set(type);
       this.fetchLaunches(type);
