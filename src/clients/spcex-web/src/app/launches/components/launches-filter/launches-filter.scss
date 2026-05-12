@@ -1,3 +1,23 @@
 :host {
   display: block;
 }
+
+.launches-filter-toggle-group {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle {
+  border: none;
+}
+
+:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle:not(:last-child) {
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle-label {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding-inline: 0.25rem;
+}

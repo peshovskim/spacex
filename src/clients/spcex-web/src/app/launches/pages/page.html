@@ -1,8 +1,5 @@
 <div class="page">
   <mat-toolbar class="shell-toolbar">
-    <button mat-icon-button type="button" aria-label="Navigation menu">
-      <mat-icon>menu</mat-icon>
-    </button>
     <div class="shell-brand">
       <span class="shell-brand-mark">
         <mat-icon class="shell-brand-icon" aria-hidden="true">rocket_launch</mat-icon>
@@ -20,17 +17,13 @@
   </mat-toolbar>
 
   <main class="page-body">
-    <header class="page-intro">
-      <h1 class="mat-headline-small page-title">{{ pageTitle() | titlecase }}</h1>
-      <p class="mat-body-medium page-subtitle">Browse SpaceX launch history.</p>
-    </header>
-
     <mat-card appearance="outlined" class="controls-card">
       <mat-card-content class="controls-card-content">
         <app-launches-filter
           [selectedType]="activeType()"
           (selectedTypeChange)="onTypeChange($event)"
         />
+        <h1 class="mat-headline-small controls-title">{{ pageTitle() | titlecase }}</h1>
         <mat-form-field
           appearance="outline"
           class="controls-search"

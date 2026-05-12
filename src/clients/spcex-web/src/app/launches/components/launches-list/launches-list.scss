@@ -5,6 +5,22 @@
   padding-block: var(--mat-sys-spacing-4, 1rem);
 }
 
+.launches-loading-panel {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  min-height: min(70dvh, 36rem);
+  padding: var(--mat-sys-spacing-8, 2rem);
+}
+
+.state-loading {
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 0;
+  text-align: center;
+}
+
 .state-error {
   color: var(--mat-sys-error);
 }
