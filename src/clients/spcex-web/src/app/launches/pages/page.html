@@ -1,13 +1,51 @@
 <div class="page">
-  <mat-toolbar color="primary" class="page-toolbar">
-    <span class="toolbar-title">Launches</span>
+  <mat-toolbar class="shell-toolbar">
+    <button mat-icon-button type="button" aria-label="Navigation menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="shell-brand">
+      <span class="shell-brand-mark">
+        <mat-icon class="shell-brand-icon" aria-hidden="true">rocket_launch</mat-icon>
+      </span>
+      <span class="shell-toolbar-title mat-title-medium">SpaceX Launches</span>
+    </div>
+    <span class="shell-toolbar-spacer"></span>
+    <button mat-icon-button type="button" aria-label="Account">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <a mat-stroked-button routerLink="/auth/login" class="shell-signout">
+      <mat-icon>logout</mat-icon>
+      Sign out
+    </a>
   </mat-toolbar>
 
   <main class="page-body">
-    <app-launches-filter
-      [selectedType]="activeType()"
-      (selectedTypeChange)="onTypeChange($event)"
-    />
+    <header class="page-intro">
+      <h1 class="mat-headline-small page-title">{{ pageTitle() | titlecase }}</h1>
+      <p class="mat-body-medium page-subtitle">Browse SpaceX launch history.</p>
+    </header>
+
+    <mat-card appearance="outlined" class="controls-card">
+      <mat-card-content class="controls-card-content">
+        <app-launches-filter
+          [selectedType]="activeType()"
+          (selectedTypeChange)="onTypeChange($event)"
+        />
+        <mat-form-field
+          appearance="outline"
+          class="controls-search"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>Search</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput readonly tabindex="-1" placeholder="Search by launch name…" />
+        </mat-form-field>
+        <button mat-icon-button type="button" aria-label="More filters">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+
     <app-launches-list
       [launches]="launches()"
       [loading]="loading()"

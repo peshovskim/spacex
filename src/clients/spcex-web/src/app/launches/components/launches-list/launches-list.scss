@@ -1,18 +1,40 @@
-.launches-list {
-  margin-top: 1rem;
-}
-
 .state {
-  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 0;
+  display: flex;
+  gap: var(--mat-sys-spacing-3, 0.75rem);
+  padding-block: var(--mat-sys-spacing-4, 1rem);
 }
 
 .state-error {
-  color: var(--mat-sys-error, #b00020);
+  color: var(--mat-sys-error);
 }
 
 .state-empty {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.launches-table-card-content {
+  padding-bottom: 0 !important;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.launches-table {
+  min-width: 100%;
+  width: 100%;
+}
+
+.launches-table-card-actions {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0;
+}
+
+.launches-table-card-actions .mat-mdc-paginator {
+  background: transparent;
 }

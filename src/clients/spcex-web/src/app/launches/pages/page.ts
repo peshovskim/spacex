@@ -1,7 +1,20 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { LaunchType, toLaunchType, type LaunchDto } from '../models/launch.model';
 import { LaunchesService } from '../services/launches.service';
@@ -10,7 +23,18 @@ import { LaunchesListComponent } from '../components/launches-list/launches-list
 
 @Component({
   selector: 'app-page',
-  imports: [MatToolbarModule, LaunchesFilterComponent, LaunchesListComponent],
+  imports: [
+    TitleCasePipe,
+    RouterLink,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    LaunchesFilterComponent,
+    LaunchesListComponent,
+  ],
   templateUrl: './page.html',
   styleUrl: './page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +44,18 @@ export class PageComponent implements OnInit {
   readonly launches = signal<LaunchDto[]>([]);
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly pageTitle = computed(() => {
+    switch (this.activeType()) {
+      case LaunchType.Latest:
+        return 'Latest launch';
+      case LaunchType.Past:
+        return 'Completed launches';
+      case LaunchType.Upcoming:
+      default:
+        return 'Upcoming launches';
+    }
+  });
 
   constructor(
     private readonly route: ActivatedRoute,
