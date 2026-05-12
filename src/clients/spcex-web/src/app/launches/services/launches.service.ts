@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import type { LaunchesResponseDto } from '../models/launch.model';
+import { LaunchType, toLaunchType, type LaunchesResponseDto } from '../models/launch.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,25 +13,11 @@ export class LaunchesService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getLaunches(type: string): Observable<LaunchesResponseDto> {
-    const params = new HttpParams().set(
-      'type',
-      toLaunchTypeQueryValue(type),
-    );
+  getLaunches(type: LaunchType): Observable<LaunchesResponseDto> {
+    const params = new HttpParams().set('type', type);
 
     return this.http.get<LaunchesResponseDto>(`${this.baseUrl}/api/launches`, {
       params,
     });
-  }
-}
-
-function toLaunchTypeQueryValue(type: string): string {
-  switch (type.trim().toLowerCase()) {
-    case 'latest':
-      return 'Latest';
-    case 'past':
-      return 'Past';
-    default:
-      return 'Upcoming';
   }
 }

@@ -1,10 +1,13 @@
-<div class="launches-page">
+<div class="page">
   <mat-toolbar color="primary" class="page-toolbar">
     <span class="toolbar-title">Launches</span>
   </mat-toolbar>
 
   <main class="page-body">
-    <app-launches-filter [selectedType]="activeType()" />
+    <app-launches-filter
+      [selectedType]="activeType()"
+      (selectedTypeChange)="onTypeChange($event)"
+    />
     <app-launches-list
       [launches]="launches()"
       [loading]="loading()"

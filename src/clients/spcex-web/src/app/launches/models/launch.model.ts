@@ -1,4 +1,21 @@
-export const DEFAULT_LAUNCH_QUERY_TYPE = 'upcoming';
+export const DEFAULT_LAUNCH_TYPE = 'upcoming';
+
+export enum LaunchType {
+  Latest = 'latest',
+  Upcoming = 'upcoming',
+  Past = 'past',
+}
+
+export function toLaunchType(input?: string): LaunchType {
+  switch (input?.toLowerCase()) {
+    case 'latest':
+      return LaunchType.Latest;
+    case 'past':
+      return LaunchType.Past;
+    default:
+      return LaunchType.Upcoming;
+  }
+}
 
 export interface LaunchDto {
   flight_number: number;

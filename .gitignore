@@ -2,6 +2,7 @@
 **/bin/
 **/obj/
 **/out/
+**/_build_out/
 
 # Visual Studio / VS Code / Rider
 .vs/

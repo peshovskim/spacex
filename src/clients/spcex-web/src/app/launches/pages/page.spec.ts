@@ -7,17 +7,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
-import { environment } from '../../../../environments/environment';
-import { LaunchesPageComponent } from './launches-page';
+import { environment } from '../../environments/environment';
+import { PageComponent } from './page';
 
-describe('LaunchesPageComponent', () => {
-  let fixture: ComponentFixture<LaunchesPageComponent>;
+describe('PageComponent', () => {
+  let fixture: ComponentFixture<PageComponent>;
   let httpMock: HttpTestingController;
   const queryParamMap$ = new BehaviorSubject(convertToParamMap({ type: 'upcoming' }));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LaunchesPageComponent],
+      imports: [PageComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -29,13 +29,13 @@ describe('LaunchesPageComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LaunchesPageComponent);
+    fixture = TestBed.createComponent(PageComponent);
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
 
     const expectedUrl = `${environment.apiUrl.replace(/\/$/, '')}/api/launches`;
     const req = httpMock.expectOne(
-      (r) => r.url.startsWith(expectedUrl) && r.params.get('type') === 'upcoming',
+      (r) => r.url.startsWith(expectedUrl) && r.params.get('type') === 'Upcoming',
     );
     req.flush({ launches: [] });
     await fixture.whenStable();
