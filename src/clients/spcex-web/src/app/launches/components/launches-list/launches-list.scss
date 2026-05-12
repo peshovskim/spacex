@@ -37,17 +37,26 @@
   width: 100%;
 }
 
-@media (max-width: 777px) {
+/* Below md: keep Name + DateUtc; avoid Bootstrap display utilities on mat cells. */
+@media (max-width: 767.98px) {
   :host ::ng-deep table.launches-table {
-    th.mat-column-vehicle,
-    td.mat-column-vehicle,
-    th.mat-column-launchSite,
-    td.mat-column-launchSite,
-    th.mat-column-returnSite,
-    td.mat-column-returnSite {
+    th.mat-column-flightNumber,
+    td.mat-column-flightNumber,
+    th.mat-column-details,
+    td.mat-column-details,
+    th.mat-column-upcoming,
+    td.mat-column-upcoming,
+    th.mat-column-success,
+    td.mat-column-success {
       display: none !important;
     }
   }
+}
+
+.launches-cell-details {
+  max-width: 28rem;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .launches-table-card-actions {

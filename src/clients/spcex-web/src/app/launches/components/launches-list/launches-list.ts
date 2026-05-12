@@ -34,11 +34,12 @@ export class LaunchesListComponent implements OnChanges {
   private _paginator?: MatPaginator;
 
   readonly displayedColumns: string[] = [
-    'launch',
-    'vehicle',
-    'launchSite',
-    'returnSite',
-    'launchDate',
+    'flightNumber',
+    'name',
+    'details',
+    'upcoming',
+    'success',
+    'dateUtc',
   ];
 
   @ViewChild(MatSort)
@@ -64,18 +65,42 @@ export class LaunchesListComponent implements OnChanges {
   constructor() {
     this.dataSource.sortingDataAccessor = (row, columnId) => {
       switch (columnId) {
-        case 'launch':
+        case 'flightNumber':
+          return row.flight_number;
+        case 'name':
           return row.name.toLowerCase();
-        case 'vehicle':
-        case 'launchSite':
-        case 'returnSite':
-          return '';
-        case 'launchDate':
+        case 'details':
+          return (row.details ?? '').toLowerCase();
+        case 'dateUtc':
           return row.date_utc ? new Date(row.date_utc).getTime() : 0;
+        case 'upcoming':
+          return LaunchesListComponent.boolSortKey(row.upcoming);
+        case 'success':
+          return LaunchesListComponent.boolSortKey(row.success);
         default:
           return '';
       }
     };
+  }
+
+  formatBoolean(value: boolean | null | undefined): string {
+    if (value === true) {
+      return 'true';
+    }
+    if (value === false) {
+      return 'false';
+    }
+    return this.emptyCell;
+  }
+
+  private static boolSortKey(value: boolean | null | undefined): number {
+    if (value === true) {
+      return 1;
+    }
+    if (value === false) {
+      return 0;
+    }
+    return -1;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

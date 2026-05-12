@@ -44,7 +44,13 @@ export class PageComponent implements OnInit {
     }
 
     return items.filter((launch) => {
-      const haystack = [launch.name, launch.details ?? '', String(launch.flight_number)]
+      const haystack = [
+        launch.name,
+        launch.details ?? '',
+        String(launch.flight_number),
+        String(launch.upcoming ?? ''),
+        String(launch.success ?? ''),
+      ]
         .join(' ')
         .toLowerCase();
 

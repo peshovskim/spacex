@@ -1,5 +1,3 @@
-export const DEFAULT_LAUNCH_TYPE = 'upcoming';
-
 export enum LaunchType {
   Latest = 'latest',
   Upcoming = 'upcoming',
