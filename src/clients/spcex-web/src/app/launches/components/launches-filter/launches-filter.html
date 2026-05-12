@@ -1,13 +1,12 @@
-<mat-button-toggle-group
-  class="launches-filter-toggle-group"
-  appearance="standard"
-  color="primary"
-  [hideSingleSelectionIndicator]="true"
-  [value]="selectedType"
-  (change)="onSelectionChange($event)"
-  aria-label="Choose which launches to show"
->
+<div class="filter-toggle d-inline-flex" role="group" aria-label="Choose which launches to show">
   @for (item of items; track item.type) {
-    <mat-button-toggle [value]="item.type">{{ item.label }}</mat-button-toggle>
+    <button
+      type="button"
+      class="filter-toggle__btn"
+      [class.is-active]="selectedType === item.type"
+      (click)="onSelect(item.type)"
+    >
+      {{ item.label }}
+    </button>
   }
-</mat-button-toggle-group>
+</div>

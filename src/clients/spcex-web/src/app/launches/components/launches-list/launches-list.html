@@ -18,45 +18,50 @@
     </mat-card-content>
   } @else {
     <mat-card-content class="launches-table-card-content">
-      <div class="table-scroll">
-        <table mat-table [dataSource]="dataSource" matSort class="mat-typography launches-table">
-          <ng-container matColumnDef="launch">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch</th>
-            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
-          </ng-container>
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="mat-typography launches-table w-100"
+      >
+        <ng-container matColumnDef="launch">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch</th>
+          <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="vehicle">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Vehicle</th>
-            <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
-          </ng-container>
+        <ng-container matColumnDef="vehicle">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Vehicle</th>
+          <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="launchSite">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch site</th>
-            <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
-          </ng-container>
+        <ng-container matColumnDef="launchSite">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch site</th>
+          <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="returnSite">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Return site</th>
-            <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
-          </ng-container>
+        <ng-container matColumnDef="returnSite">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Return site</th>
+          <td mat-cell *matCellDef="let row">{{ emptyCell }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="launchDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch date</th>
-            <td mat-cell *matCellDef="let row">
-              @if (row.date_utc) {
-                {{ row.date_utc | date: 'mediumDate' : 'UTC' }}
-              } @else {
-                {{ emptyCell }}
-              }
-            </td>
-          </ng-container>
+        <ng-container matColumnDef="launchDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Launch date</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.date_utc) {
+              {{ row.date_utc | date: 'mediumDate' : 'UTC' }}
+            } @else {
+              {{ emptyCell }}
+            }
+          </td>
+        </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
     </mat-card-content>
-    <mat-card-actions class="launches-table-card-actions">
+    <mat-card-actions
+      class="launches-table-card-actions d-flex flex-wrap justify-content-end gap-2"
+    >
       <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons />
     </mat-card-actions>
   }

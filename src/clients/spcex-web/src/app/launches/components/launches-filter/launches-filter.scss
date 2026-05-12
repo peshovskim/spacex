@@ -2,22 +2,43 @@
   display: block;
 }
 
-.launches-filter-toggle-group {
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 9999px;
+.filter-toggle {
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
   overflow: hidden;
 }
 
-:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle {
-  border: none;
-}
-
-:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle:not(:last-child) {
-  border-right: 1px solid var(--mat-sys-outline-variant);
-}
-
-:host ::ng-deep .launches-filter-toggle-group .mat-mdc-button-toggle-label {
+.filter-toggle__btn {
+  cursor: pointer;
+  min-width: 6.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  padding-inline: 0.25rem;
+  color: #212529;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.filter-toggle__btn + .filter-toggle__btn {
+  border-left: 1px solid #dee2e6;
+}
+
+.filter-toggle__btn:hover {
+  color: #212529;
+  background-color: #e9ecef;
+}
+
+.filter-toggle__btn:focus-visible {
+  z-index: 1;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.filter-toggle__btn.is-active {
+  font-weight: 600;
+  color: #212529;
+  background-color: #e9ecef;
+  box-shadow: inset 0 -2px 0 0 #0d6efd;
 }

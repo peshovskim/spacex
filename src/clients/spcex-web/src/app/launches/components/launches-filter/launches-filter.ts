@@ -1,18 +1,23 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
+
 import { LaunchType } from '../../models/launch.model';
 
 @Component({
   selector: 'app-launches-filter',
-  imports: [MatButtonToggleModule],
   templateUrl: './launches-filter.html',
   styleUrl: './launches-filter.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LaunchesFilterComponent {
-  @Input({ required: true }) selectedType!: string;
+  @Input({ required: true }) selectedType!: LaunchType;
 
-  @Output() readonly selectedTypeChange = new EventEmitter<string>();
+  @Output() readonly selectedTypeChange = new EventEmitter<LaunchType>();
 
   readonly items = [
     { type: LaunchType.Latest, label: 'Latest' },
@@ -20,10 +25,9 @@ export class LaunchesFilterComponent {
     { type: LaunchType.Past, label: 'Past' },
   ];
 
-  onSelectionChange(event: MatButtonToggleChange): void {
-    const value = String(event.value);
-    if (value !== this.selectedType) {
-      this.selectedTypeChange.emit(value);
+  onSelect(type: LaunchType): void {
+    if (type !== this.selectedType) {
+      this.selectedTypeChange.emit(type);
     }
   }
 }

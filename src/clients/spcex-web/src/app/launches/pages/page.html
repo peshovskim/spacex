@@ -1,46 +1,67 @@
 <div class="page">
-  <mat-toolbar class="shell-toolbar">
-    <div class="shell-brand">
-      <span class="shell-brand-mark">
-        <mat-icon class="shell-brand-icon" aria-hidden="true">rocket_launch</mat-icon>
-      </span>
-      <span class="shell-toolbar-title mat-title-medium">SpaceX Launches</span>
+  <nav class="shell-nav border-bottom bg-white" aria-label="Main">
+    <div
+      class="container-fluid d-flex align-items-center justify-content-between py-2 px-3 px-md-4"
+    >
+      <div class="d-flex align-items-center gap-2">
+        <span
+          class="shell-brand-mark d-inline-flex align-items-center justify-content-center flex-shrink-0 rounded-circle"
+        >
+          <mat-icon class="shell-brand-icon" aria-hidden="true">rocket_launch</mat-icon>
+        </span>
+        <span class="shell-title fw-semibold text-dark">SpaceX Launches</span>
+      </div>
+      <div class="d-flex align-items-center gap-1">
+        <button
+          type="button"
+          class="btn btn-link text-secondary p-2 shell-icon-btn"
+          aria-label="Account"
+        >
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <a
+          routerLink="/auth/login"
+          class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 rounded-3 shell-signout"
+        >
+          <mat-icon class="shell-signout-icon">logout</mat-icon>
+          Sign out
+        </a>
+      </div>
     </div>
-    <span class="shell-toolbar-spacer"></span>
-    <button mat-icon-button type="button" aria-label="Account">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <a mat-stroked-button routerLink="/auth/login" class="shell-signout">
-      <mat-icon>logout</mat-icon>
-      Sign out
-    </a>
-  </mat-toolbar>
+  </nav>
 
   <main class="page-body">
-    <mat-card appearance="outlined" class="controls-card">
-      <mat-card-content class="controls-card-content">
-        <app-launches-filter
-          [selectedType]="activeType()"
-          (selectedTypeChange)="onTypeChange($event)"
-        />
-        <h1 class="mat-headline-small controls-title">{{ pageTitle() | titlecase }}</h1>
-        <mat-form-field
-          appearance="outline"
-          class="controls-search"
-          subscriptSizing="dynamic"
-        >
-          <mat-label>Search</mat-label>
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput readonly tabindex="-1" placeholder="Search by launch name…" />
-        </mat-form-field>
-        <button mat-icon-button type="button" aria-label="More filters">
-          <mat-icon>filter_list</mat-icon>
-        </button>
-      </mat-card-content>
-    </mat-card>
+    <div class="controls-bar border rounded-3 bg-white p-3 mb-3 shadow-sm">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-between column-gap-3 row-gap-3"
+      >
+        <div class="flex-shrink-0">
+          <app-launches-filter
+            [selectedType]="activeType()"
+            (selectedTypeChange)="onTypeChange($event)"
+          />
+        </div>
+        <h1 class="controls-title mb-0 fw-bold fs-5 text-dark text-center flex-grow-1 px-2">
+          {{ pageTitle() | titlecase }}
+        </h1>
+        <div class="input-group controls-search flex-shrink-0">
+          <span class="input-group-text bg-white border-end-0 text-secondary">
+            <mat-icon class="controls-search-icon">search</mat-icon>
+          </span>
+          <input
+            #searchInput
+            type="search"
+            class="form-control border-start-0"
+            placeholder="Search launches…"
+            autocomplete="off"
+            (keydown.enter)="onSearchEnter($event)"
+          />
+        </div>
+      </div>
+    </div>
 
     <app-launches-list
-      [launches]="launches()"
+      [launches]="displayedLaunches()"
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     />

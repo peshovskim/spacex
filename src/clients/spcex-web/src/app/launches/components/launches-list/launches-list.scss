@@ -33,14 +33,21 @@
   padding-bottom: 0 !important;
 }
 
-.table-scroll {
-  overflow-x: auto;
+.launches-table {
   width: 100%;
 }
 
-.launches-table {
-  min-width: 100%;
-  width: 100%;
+@media (max-width: 777px) {
+  :host ::ng-deep table.launches-table {
+    th.mat-column-vehicle,
+    td.mat-column-vehicle,
+    th.mat-column-launchSite,
+    td.mat-column-launchSite,
+    th.mat-column-returnSite,
+    td.mat-column-returnSite {
+      display: none !important;
+    }
+  }
 }
 
 .launches-table-card-actions {
