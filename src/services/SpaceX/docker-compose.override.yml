@@ -1,0 +1,6 @@
+# Merged automatically with docker-compose.yml for local development (not required in CI).
+# Only override fields you need; do not replace entire service graphs with empty maps.
+services:
+  redis:
+    labels:
+      com.spacex.stack: "local-dev"

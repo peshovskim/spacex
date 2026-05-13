@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeProjectPath": "docker-compose.yml",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "",
+      "composeLaunchUrl": "",
+      "serviceActions": {
+        "redis": "StartWithoutDebugging"
+      }
+    }
+  }
+}

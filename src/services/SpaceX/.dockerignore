@@ -1,0 +1,12 @@
+# Build context for future SpaceX.Api images — keeps layers small.
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/out
+**/*.user
+**/*.suo
+**/*.cache
+**/node_modules
+**/TestResults

@@ -11,6 +11,9 @@
     </Project>
   </Folder>
   <Project Path="Application/Application.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Platform Project="AnyCPU" />
+  </Project>
   <Project Path="Domain/Domain.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
   <Project Path="SharedKernel/SharedKernel.csproj" Id="2b30165a-7719-4b38-8b01-4a50784e5a14" />
