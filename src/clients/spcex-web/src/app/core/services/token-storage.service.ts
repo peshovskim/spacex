@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const ACCESS_TOKEN_KEY = 'accessToken';
+const ACCESS_TOKEN_KEY = 'spacex.auth.accessToken';
 
 @Injectable({
   providedIn: 'root',
