@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SpaceX.Application;
+using SpaceX.Application.Options;
 using SpaceX.Infrastructure;
 using SpaceX.Infrastructure.Options;
 
@@ -10,6 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.Configure<CachingOptions>(
+    builder.Configuration.GetSection(CachingOptions.SectionName));
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "SpaceX:";
+});
 
 builder.Services.AddCors(options =>
 {
