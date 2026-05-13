@@ -26,4 +26,33 @@ export interface LaunchDto {
 
 export interface LaunchesResponseDto {
   launches: LaunchDto[];
+  totalCount: number;
+}
+
+export enum LaunchSortField {
+  FlightNumber = 'flight_number',
+  Name = 'name',
+  Details = 'details',
+  DateUtc = 'date_utc',
+  Upcoming = 'upcoming',
+  Success = 'success',
+}
+
+export function toSortColumnToApiField(active: string): LaunchSortField {
+  switch (active) {
+    case 'flightNumber':
+      return LaunchSortField.FlightNumber;
+    case 'name':
+      return LaunchSortField.Name;
+    case 'details':
+      return LaunchSortField.Details;
+    case 'dateUtc':
+      return LaunchSortField.DateUtc;
+    case 'upcoming':
+      return LaunchSortField.Upcoming;
+    case 'success':
+      return LaunchSortField.Success;
+    default:
+      return LaunchSortField.DateUtc;
+  }
 }

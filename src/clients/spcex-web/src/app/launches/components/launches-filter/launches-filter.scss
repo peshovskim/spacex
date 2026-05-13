@@ -1,8 +1,14 @@
 :host {
+  box-sizing: border-box;
   display: block;
+  width: 100%;
 }
 
 .filter-toggle {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   border: 1px solid #dee2e6;
   border-radius: 0.375rem;
   overflow: hidden;
@@ -10,9 +16,11 @@
 
 .filter-toggle__btn {
   cursor: pointer;
-  min-width: 6.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: clamp(2.65rem, 5.5vw, 3.1rem);
+  padding: clamp(0.65rem, 1.8vw, 0.95rem) clamp(0.75rem, 3.5vw, 1.75rem);
+  font-size: clamp(0.875rem, 0.8rem + 0.55vw, 1.0625rem);
   font-weight: 500;
   color: #212529;
   background-color: #f8f9fa;
@@ -41,4 +49,12 @@
   color: #212529;
   background-color: #e9ecef;
   box-shadow: inset 0 -2px 0 0 #0d6efd;
+}
+
+:host.launches-filter--toolbar {
+  .filter-toggle__btn {
+    min-height: clamp(2.2rem, 3.8vw, 2.85rem);
+    padding: clamp(0.45rem, 1.2vw, 0.7rem) clamp(0.5rem, 2.8vw, 1.5rem);
+    font-size: clamp(0.8125rem, 0.72rem + 0.5vw, 1rem);
+  }
 }

@@ -23,6 +23,9 @@
         mat-table
         [dataSource]="dataSource"
         matSort
+        [matSortActive]="sortActive"
+        [matSortDirection]="sortDirection"
+        (matSortChange)="sortChange.emit($event)"
         class="mat-typography launches-table w-100"
       >
         <ng-container matColumnDef="flightNumber">
@@ -75,10 +78,19 @@
       </table>
     </mat-card-content>
 
-    <mat-card-actions
-      class="launches-table-card-actions d-flex flex-wrap justify-content-end gap-2"
-    >
-      <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons />
-    </mat-card-actions>
+    @if (!hidePaginator) {
+      <mat-card-actions
+        class="launches-table-card-actions d-flex flex-wrap justify-content-end gap-2"
+      >
+        <mat-paginator
+          [length]="totalCount"
+          [pageIndex]="pageIndex"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[10, 25, 50]"
+          showFirstLastButtons
+          (page)="pageChange.emit($event)"
+        />
+      </mat-card-actions>
+    }
   }
 </mat-card>

@@ -1,20 +1,18 @@
 import { TitleCasePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  ElementRef,
-  OnInit,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
+import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../auth/services/auth.service';
-import { LaunchType, toLaunchType, type LaunchDto } from '../models/launch.model';
+import {
+  LaunchType,
+  toLaunchType,
+  toSortColumnToApiField,
+  type LaunchDto,
+  type LaunchesResponseDto,
+} from '../models/launch.model';
 import { LaunchesFilterComponent } from '../components/launches-filter/launches-filter';
 import { LaunchesListComponent } from '../components/launches-list/launches-list';
 import { LaunchesService } from '../services/launches.service';
@@ -27,36 +25,16 @@ import { LaunchesService } from '../services/launches.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageComponent implements OnInit {
-  readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
-
   readonly activeType = signal<LaunchType>(LaunchType.Upcoming);
   readonly launches = signal<LaunchDto[]>([]);
+  readonly totalCount = signal(0);
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  readonly searchQuery = signal('');
-
-  readonly displayedLaunches = computed(() => {
-    const items = this.launches();
-    const q = this.searchQuery().trim().toLowerCase();
-    if (!q) {
-      return items;
-    }
-
-    return items.filter((launch) => {
-      const haystack = [
-        launch.name,
-        launch.details ?? '',
-        String(launch.flight_number),
-        String(launch.upcoming ?? ''),
-        String(launch.success ?? ''),
-      ]
-        .join(' ')
-        .toLowerCase();
-
-      return haystack.includes(q);
-    });
-  });
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  readonly sortActive = signal('dateUtc');
+  readonly sortDirection = signal<'asc' | 'desc'>('asc');
 
   readonly pageTitle = computed(() => {
     switch (this.activeType()) {
@@ -75,58 +53,83 @@ export class PageComponent implements OnInit {
     private readonly router: Router,
     private readonly launchesService: LaunchesService,
     private readonly authService: AuthService,
-    private readonly destroyRef: DestroyRef,
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const slug = toLaunchType(params.get('type') ?? undefined);
-      this.activeType.set(slug);
-      this.searchQuery.set('');
-      setTimeout(() => this.clearSearchField(), 0);
-      this.fetchLaunches(slug);
-    });
+    if (this.route.snapshot.queryParamMap.keys.length > 0) {
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {},
+        replaceUrl: true,
+      });
+    }
+
+    this.load();
   }
 
-  onSearchEnter(event: Event): void {
-    event.preventDefault();
-    const input = event.target as HTMLInputElement;
-    this.searchQuery.set(input.value.trim());
+  onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  onSortChange(sort: Sort): void {
+    const type = this.activeType();
+    if (!sort.direction) {
+      this.sortActive.set('dateUtc');
+      this.sortDirection.set(this.defaultSortDirection(type));
+    } else {
+      this.sortActive.set(sort.active);
+      this.sortDirection.set(sort.direction as 'asc' | 'desc');
+    }
+
+    this.pageIndex.set(0);
+    this.load();
   }
 
   onTypeChange(type: LaunchType): void {
     const slug = toLaunchType(type);
-    void this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { type: slug },
-    });
+    this.activeType.set(slug);
+    this.pageIndex.set(0);
+    this.pageSize.set(10);
+    this.sortActive.set('dateUtc');
+    this.sortDirection.set(this.defaultSortDirection(slug));
+    this.load();
   }
 
   signOut(): void {
     this.authService.signOut();
   }
 
-  private clearSearchField(): void {
-    const el = this.searchInput()?.nativeElement;
-    if (el) {
-      el.value = '';
-    }
+  private defaultSortDirection(type: LaunchType): 'asc' | 'desc' {
+    return type === LaunchType.Upcoming ? 'asc' : 'desc';
   }
 
-  private fetchLaunches(type: LaunchType): void {
+  private load(): void {
+    const type = this.activeType();
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    this.launchesService.getLaunches(type).subscribe({
-      next: (response) => {
-        this.launches.set(response.launches ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.launches.set([]);
-        this.errorMessage.set('Could not load launches.');
-        this.loading.set(false);
-      },
-    });
+    this.launchesService
+      .getLaunches({
+        type,
+        page: this.pageIndex(),
+        pageSize: this.pageSize(),
+        sortField: toSortColumnToApiField(this.sortActive()),
+        sortDirection: this.sortDirection(),
+      })
+      .subscribe({
+        next: (response: LaunchesResponseDto) => {
+          this.launches.set(response.launches ?? []);
+          this.totalCount.set(response.totalCount ?? 0);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.launches.set([]);
+          this.totalCount.set(0);
+          this.errorMessage.set('Could not load launches.');
+          this.loading.set(false);
+        },
+      });
   }
 }
