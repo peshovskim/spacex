@@ -9,13 +9,21 @@
 
 ## Run the API
 
-From the repository root:
+Trust the ASP.NET HTTPS dev certificate once per machine:
 
 ```bash
-dotnet run --project src/services/SpaceX/SpaceX.Api/SpaceX.Api.csproj
+dotnet dev-certs https --trust
 ```
 
-HTTPS profile listens on **https://localhost:7263** (`launchSettings.json`). Swagger opens when using the `https` profile.
+From the repository root (default **`https`** profile → **https://localhost:7263**):
+
+```bash
+dotnet run --project src/services/SpaceX/SpaceX.Api/SpaceX.Api.csproj --launch-profile https
+```
+
+Swagger: **https://localhost:7263/swagger**
+
+Debug in VS Code: open `src/services/SpaceX` or `src`, press **F5**, choose **SpaceX API** / **SpaceX API (https)**.
 
 Use `appsettings.Development.json` / user secrets for local **Jwt** and **database** if needed.
 

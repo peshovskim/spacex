@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>spacex-api-6c2e9f3a-1b4d-4c5e-9f02-b7a8d3e10421</UserSecretsId>
     <RootNamespace>SpaceX.Api</RootNamespace>
+    <DefaultLaunchProfile>https</DefaultLaunchProfile>
   </PropertyGroup>
 
   <ItemGroup>

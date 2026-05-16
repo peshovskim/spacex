@@ -1,9 +1,27 @@
 {
-    "configurations": [
-        {
-            "name": "C#: Launch Startup Project",
-            "type": "dotnet",
-            "request": "launch"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SpaceX API (https)",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/services/SpaceX/SpaceX.Api/SpaceX.Api.csproj",
+      "launchProfile": "https"
+    },
+    {
+      "name": "SpaceX API (coreclr)",
+      "type": "coreclr",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/services/SpaceX/SpaceX.Api/SpaceX.Api.csproj",
+      "launchSettingsProfile": "https",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+        "uriFormat": "%s/swagger"
+      }
+    }
+  ]
 }
