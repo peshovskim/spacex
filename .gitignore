@@ -52,6 +52,9 @@ temp/
 logs/
 *.log
 .cache/
+*.lscache
+**/*.lscache
+*.csproj.lscache
 
 # OS
 .DS_Store
